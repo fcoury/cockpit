@@ -1,0 +1,15 @@
+h1 Projects
+
+table.table.table-striped.table-bordered.table-hover
+  thead
+    tr
+      th Project name
+      th Total hours
+      th Budget
+      th Remaining
+  tbody
+    tr(ng-repeat='project in projects')
+      td {{project.name}}
+      td(class='table-row--right') {{project.budget | number:2}}
+      td(class='table-row--right') {{project.hours | number:2}}
+      td(class='table-row--right') {{project.budget - project.hours | number:2}}

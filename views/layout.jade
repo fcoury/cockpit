@@ -1,0 +1,22 @@
+doctype html
+html(lang='en', ng-app='cockpit')
+  head
+    title= title
+    link(rel='stylesheet', href='/stylesheets/bootstrap/bootstrap.min.css')
+    link(rel='stylesheet', href='/stylesheets/style.css')
+  body
+    .navbar.navbar-default.navbar-fixed-top
+      .container
+        .navbar-header
+          button.navbar-toggle(type='button', data-toggle='collapse', data-target='.navbar-collapse')
+            span.sr-only Toggle navigation
+          a.navbar-brand(href='#') Gistia Cockpit
+
+    block content
+
+    script(src='javascripts/lib/angular.min.js')
+    script(src='javascripts/lib/angular-route.min.js')
+    script(src='javascripts/lib/underscore.min.js')
+    script(src='javascripts/controllers.js')
+    script(src='javascripts/services.js')
+    script(src='javascripts/app.js')
