@@ -4,12 +4,50 @@ table.table.table-striped.table-bordered.table-hover
   thead
     tr
       th Project name
-      th Total hours
       th Budget
+      th Total hours
       th Remaining
   tbody
     tr(ng-repeat='project in projects')
       td {{project.name}}
-      td(class='table-row--right') {{project.budget | number:2}}
+      td(class='table-row--right')
+        span(ng-if='budget[project.name]')
+          span(ng-click='edit(project);', ng-if='!project.editing') {{budget[project.name] | number:2}}
+        span(ng-if='!budget[project.name]')
+          span(ng-click='edit(project);', ng-if='!project.editing', class='no-budget') none
+        input(type='text', ng-model='budget[project.name]', ng-if='project.editing', ng-blur='edit(project)', class='budget')
       td(class='table-row--right') {{project.hours | number:2}}
-      td(class='table-row--right') {{project.budget - project.hours | number:2}}
+      td(class='table-row--right') {{budget[project.name] - project.hours | number:2}}
+    tr
+      td(class='table-row--right', colspan=2) Total
+      td(class='table-row--right') {{projectsTotal|number: 2}}
+
+h1 Users
+
+table.table.table-striped.table-bordered.table-hover
+  thead
+    tr
+      th Freshbooks ID
+      th User name
+      th $/Hour
+      th Total hours
+      th Total $
+  tbody
+    tr(ng-repeat='user in users')
+      td {{user.freshbooks_id}}
+      td {{user.name}}
+      td(class='table-row--right') {{user.rate|number: 2}}
+      td(class='table-row--right') {{hoursByUser[user.freshbooks_id] | number:2}}
+      td(class='table-row--right') {{hoursByUser[user.freshbooks_id] * user.rate | number:2}}
+    tr
+      td(class='table-row--right', colspan=3) Total
+      td(class='table-row--right') {{usersTotal|number: 2}}
+
+form(class='form-inline' role='form' ng-submit='addUser()')
+  div(class='form-group')
+    label(class='sr-only' for='user.name') User name
+    input(type='text' class='form-control' id='user.name' placeholder='Name' ng-model='newUser.name')
+  div(class='form-group')
+    label(class='sr-only' for='user.rate') User rate
+    input(type='text' class='form-control' id='user.rate' placeholder='Rate' ng-model='newUser.rate')
+  button(type='submit' class='btn btn-default') Add user

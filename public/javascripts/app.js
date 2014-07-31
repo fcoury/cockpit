@@ -1,4 +1,4 @@
-angular.module('cockpit', ['ngRoute']).
+angular.module('cockpit', ['ngRoute', 'firebase']).
   config(function($routeProvider, $locationProvider) {
     console.log('here');
     $routeProvider.

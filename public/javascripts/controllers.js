@@ -1,7 +1,21 @@
-function IndexCtrl($scope, $http, $q) {
+function IndexCtrl($scope, $http, $q, $firebase) {
   var projects_request = $http.get('/api/projects');
   var entries_request = $http.get('/api/entries');
   var budgets_request = $http.get('/api/budgets');
+
+  var budgetRef = new Firebase("https://gistia-cockpit.firebaseio.com/budget");
+  var budgetSync = $firebase(budgetRef);
+
+  var usersRef = new Firebase("https://gistia-cockpit.firebaseio.com/users");
+  var usersSync = $firebase(usersRef);
+
+  var syncObject = budgetSync.$asObject();
+  syncObject.$bindTo($scope, "budget");
+
+  $scope.users = usersSync.$asArray();
+  $scope.newUser = {};
+  $scope.usersTotal = 0;
+  $scope.projectsTotal = 0;
 
   $q.all([projects_request, entries_request, budgets_request])
     .then(function(results) {
@@ -15,6 +29,7 @@ function IndexCtrl($scope, $http, $q) {
       var projects = data.projects;
       var entries = data.entries;
       var budgets = data.budgets;
+      $scope.hoursByUser = {};
 
       _.each(entries, function(entry) {
         var id = entry.project_id;
@@ -24,6 +39,14 @@ function IndexCtrl($scope, $http, $q) {
           project.hours = 0
         }
         project.hours += parseFloat(entry.hours);
+        $scope.projectsTotal += parseFloat(entry.hours);
+
+        if (!$scope.hoursByUser[entry.staff_id]) {
+          $scope.hoursByUser[entry.staff_id] = 0;
+        }
+
+        $scope.hoursByUser[entry.staff_id] += parseFloat(entry.hours);
+        $scope.usersTotal += parseFloat(entry.hours);
       });
 
       _.each(projects, function(p) {
@@ -34,4 +57,12 @@ function IndexCtrl($scope, $http, $q) {
     }, function(error) {
       // TODO
     });
+
+  $scope.edit = function(project) {
+    project.editing = !!!project.editing;
+  };
+
+  $scope.addUser = function() {
+    $scope.users.$add($scope.newUser);
+  };
 }
