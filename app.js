@@ -4,6 +4,7 @@ var favicon = require('static-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var basicAuth = require('basic-auth-connect');
 
 var routes = require('./routes/index');
 var api = require('./routes/api');
@@ -25,6 +26,7 @@ app.use(bodyParser.urlencoded());
 app.use(cookieParser());
 app.use(require('less-middleware')(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(basicAuth('theREAL00ser', 'P@ssw0rd!'));
 
 app.use('/', routes);
 app.use('/api', api);
