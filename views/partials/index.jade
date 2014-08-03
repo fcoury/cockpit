@@ -1,12 +1,35 @@
 h1 Projects
 
+div(class='well')
+  p Showing entries from {{date.start}} to {{date.end}}
+
+  form(class='form-inline' role='form' ng-submit='changeDate()')
+    div(class='form-group')
+      select(class='form-control' ng-model='date.period' ng-change='changeDate()')
+        option
+        option Last week
+        option This month
+        option Specific date
+    span(ng-if='date.period=="Specific date"')
+      div(class='form-group')
+        label(class='sr-only' for='date.start') Start date
+        input(type='date' class='form-control' id='date.start' name='date.start' ng-model='date.start')
+      div(class='form-group')
+        label(class='sr-only' for='date.end') End date
+        input(type='date' class='form-control' id='date.end' name='date.end' ng-model='date.end')
+      button(type='submit' class='btn btn-default') Filter
+
 table.table.table-striped.table-bordered.table-hover
   thead
     tr
       th Project name
       th Budget
       th Total hours
-      th Remaining
+      th Remaining hours
+      th Hour rate
+      th Gross Rev
+      th Cost
+      th Net Rev
   tbody
     tr(ng-repeat='project in projects')
       td {{project.name}}
@@ -17,10 +40,20 @@ table.table.table-striped.table-bordered.table-hover
           span(ng-click='edit(project);', ng-if='!project.editing', class='no-budget') none
         input(type='text', ng-model='budget[project.name]', ng-if='project.editing', ng-blur='edit(project)', class='budget')
       td(class='table-row--right') {{project.hours | number:2}}
-      td(class='table-row--right') {{budget[project.name] - project.hours | number:2}}
+      td(class='table-row--right')
+        span(ng-show='budget[project.name]') {{budget[project.name] - project.hours | number:2}}
+      td(class='table-row--right') {{project.rate | currency}}
+      td(class='table-row--right') {{project.gross_revenue | currency}}
+      td(class='table-row--right') {{project.cost | currency}}
+      td(class='table-row--right') {{project.net_revenue | currency}}
     tr
       td(class='table-row--right', colspan=2) Total
       td(class='table-row--right') {{projectsTotal|number: 2}}
+      td
+      td
+      td(class='table-row--right') {{totalGrossRevenue | currency}}
+      td(class='table-row--right') {{totalCost | currency}}
+      td(class='table-row--right') {{totalNetRevenue | currency}}
 
 h1 Users
 
